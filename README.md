@@ -1,167 +1,205 @@
-# PlacementGPT - Multi-Agent AI Placement Coach
+# PlacementGPT
 
-> An AI-powered career mentor that continuously analyzes, guides, evaluates, and prepares students for placements.
+An AI-powered placement preparation platform that helps students improve their resume, plan their career path, practice DSA, prepare for interviews, and track overall placement readiness from one dashboard.
 
-## 🎯 Project Overview
+PlacementGPT brings multiple preparation tools into a single guided system, powered by specialized AI agents for resume analysis, career planning, coding practice, mock interviews, company preparation, analytics, and voice practice.
 
-PlacementGPT combines resume optimization, DSA tracking, interview preparation, company analysis, and career planning into one comprehensive platform. Using a Supervisor Agent that manages 6 specialized agents, it provides personalized guidance 24/7.
+## Overview
 
-### Key Features
-- **Resume Agent**: ATS scoring, keyword analysis, improvement suggestions
-- **Career Planner Agent**: Skill gap analysis, roadmap generation, goal setting
-- **DSA Agent**: Track progress, generate learning plans (Phase 2)
-- **Interview Agent**: Mock interviews, communication scoring (Phase 3)
-- **Company Intelligence Agent**: Company-specific prep (Phase 4)
-- **Analytics Agent**: Placement readiness metrics (Phase 2)
-- **Memory System**: Personalized context and history
-- **RAG Knowledge Base**: Interview experiences and resources
+Placement preparation is often scattered across different tools: resume checkers, coding platforms, notes, mock interview sheets, company research, and personal progress trackers.
 
-## 🏗️ Architecture
+PlacementGPT solves this by creating one centralized AI career coach that can:
 
-```
+- Analyze resumes and suggest improvements
+- Build personalized preparation roadmaps
+- Track DSA progress and weak topics
+- Generate daily and weekly study plans
+- Conduct technical and HR interview practice
+- Provide company-specific preparation guidance
+- Review voice interview transcripts
+- Show placement readiness through analytics
+
+## Problem
+
+Students preparing for placements often struggle with three things:
+
+- They do not know where they currently stand.
+- They do not know what to improve next.
+- Their preparation data is spread across too many places.
+
+Because of this, preparation becomes unstructured and hard to track. A student may solve coding problems, edit resumes, and practice interviews, but still lack a clear picture of overall readiness.
+
+## Solution
+
+PlacementGPT acts as a multi-agent AI placement coach.
+
+Each agent focuses on one part of preparation, while a Supervisor Agent coordinates the system and routes requests to the right module. This makes the platform organized, scalable, and easier to extend with new placement-preparation features.
+
+## Architecture
+
+```text
 User Interface (Next.js + React)
-          ↓
+          |
+          v
 API Gateway (FastAPI)
-          ↓
+          |
+          v
 Supervisor Agent (LangGraph)
-     ↙    ↙    ↙    ↙
-Phase 1: Resume + Career Planner
-Phase 2: DSA + Analytics
-Phase 3: Interview Agent
-Phase 4: Company Intelligence
-          ↓
+     /        |        |        \
+    v         v        v         v
+Phase 1   Phase 2   Phase 3   Phase 4
+Resume    DSA       Interview Company
+Career    Analytics Agent     Intelligence
+Planner
+          |
+          v
 Memory Layer (PostgreSQL)
-          ↓
+          |
+          v
 RAG System (ChromaDB)
 ```
 
-## 📋 Development Phases
+## AI Agents
 
-### Phase 1: Resume Agent + Career Planner
-- ✅ Resume parsing and ATS scoring
-- ✅ Keyword analysis
-- ✅ Improvement suggestions
-- ✅ Skill gap analysis
-- ✅ Career roadmap generation
-- ✅ Weekly/monthly goal setting
-- ✅ Career recommendations
+The system uses a supervisor-based multi-agent design.
 
-### Phase 2: DSA Agent + Analytics
-- DSA progress tracking (LeetCode/GFG)
-- Weak topic identification
-- Daily/weekly plan generation
-- Consistency tracking
-- Skill analysis
-- Success prediction
+- Supervisor Agent: routes user requests to the correct specialized agent.
+- Resume Agent: analyzes resumes, scores ATS readiness, extracts keywords, and suggests improvements.
+- Career Planner Agent: identifies skill gaps and creates personalized roadmaps.
+- DSA Agent: tracks coding practice, weak topics, consistency, and daily plans.
+- Analytics Agent: calculates placement readiness and progress insights.
+- Interview Agent: supports technical and HR mock interview practice.
+- Company Intelligence Agent: gives company-specific preparation guidance.
+- Voice Interview Agent: reviews spoken answers for clarity, filler words, and delivery.
 
-### Phase 3: Interview Agent
-- Technical mock interviews
-- HR mock interviews
-- Coding assessments
-- Communication evaluation
-- Feedback generation
+## Key Design Decisions
 
-### Phase 4: RAG + Company Intelligence
-- Company-specific preparation
-- Interview pattern analysis
-- Frequently asked questions
-- Important topics identification
-- Readiness reports
+**Multi-agent structure**  
+Each placement-preparation area is handled by a dedicated agent, which keeps the system modular and easier to improve.
 
-### Phase 5: Voice Interviews + Deployment
-- Speech-to-text
-- Confidence analysis
-- Filler word detection
-- Production deployment
+**Supervisor-based routing**  
+The Supervisor Agent works as the central coordinator, deciding which agent should handle each request.
 
-## 🛠️ Tech Stack
+**Full-stack dashboard**  
+The frontend gives students one place to access resume analysis, DSA tracking, interviews, company prep, and analytics.
 
-**Frontend:**
-- Next.js 14 + React 18
-- Tailwind CSS
-- Recharts (data visualization)
-- Axios (HTTP client)
-- Zustand (state management)
+**Persistent memory layer**  
+PostgreSQL stores user progress, resume history, career plans, DSA logs, interview sessions, and readiness data.
 
-**Backend:**
-- FastAPI
-- LangGraph (agent orchestration)
-- LangChain (LLM integration)
-- SQLAlchemy (ORM)
-- PostgreSQL (database)
-- ChromaDB (vector DB)
-- Gemini API (LLM)
+**RAG-based company preparation**  
+ChromaDB supports searchable knowledge for company-specific preparation and interview guidance.
 
-**Deployment:**
-- Vercel (frontend)
-- Render/AWS (backend)
+## Tech Stack
 
-## 📦 Project Structure
+| Layer | Tools |
+| --- | --- |
+| Frontend | Next.js, React, TypeScript, Tailwind CSS |
+| Backend | FastAPI, Python |
+| Database | PostgreSQL, SQLAlchemy |
+| AI Orchestration | LangGraph, LangChain |
+| LLM | Gemini API |
+| Knowledge Search | ChromaDB |
 
-```
-AI CAREER_COACH/
-├── backend/
-│   ├── app/
-│   │   ├── agents/
-│   │   │   ├── phase1/           # Phase 1: Resume & Career Planner
-│   │   │   │   ├── resume_agent.py
-│   │   │   │   ├── career_planner_agent.py
-│   │   │   │   └── __init__.py
-│   │   │   ├── supervisor/       # Supervisor managing all agents
-│   │   │   │   ├── supervisor.py
-│   │   │   │   └── __init__.py
-│   │   │   └── __init__.py
-│   │   ├── services/             # Business logic layer
-│   │   │   ├── resume_service.py
-│   │   │   ├── career_plan_service.py
-│   │   │   └── __init__.py
-│   │   ├── database/
-│   │   │   ├── db.py
-│   │   │   └── __init__.py
-│   │   ├── models/               # SQLAlchemy models
-│   │   │   └── __init__.py
-│   │   ├── schemas/              # Pydantic schemas
-│   │   │   └── __init__.py
-│   │   ├── routers/              # API endpoints
-│   │   │   ├── resume_routes.py
-│   │   │   ├── career_plan_routes.py
-│   │   │   └── __init__.py
-│   │   ├── memory/               # Memory system
-│   │   │   ├── memory_system.py
-│   │   │   └── __init__.py
-│   │   ├── config.py
-│   │   ├── main.py              # FastAPI app entry
-│   │   └── __init__.py
-│   ├── requirements.txt
-│   └── run.py
-│
-├── frontend/
-│   ├── src/
-│   │   ├── pages/               # Next.js pages (when created)
-│   │   ├── components/          # React components (when created)
-│   │   ├── services/            # API services
-│   │   ├── stores/              # Zustand stores
-│   │   └── globals.css
-│   ├── public/
-│   ├── package.json
-│   ├── next.config.js
-│   ├── tailwind.config.ts
-│   └── postcss.config.mjs
-│
-├── docs/
-│   ├── API.md                   # API documentation
-│   ├── SETUP.md                 # Setup guide
-│   ├── AGENTS.md                # Agent documentation
-│   └── PHASE_2_ROADMAP.md       # Phase 2 guide
-│
-├── .env.example
-└── README.md                    # This file
-```
+## Main Modules
 
-## 🚀 Quick Start
+- Dashboard
+- Resume Analyzer
+- Career Planner
+- DSA Tracker
+- Mock Interview
+- Company Prep
+- Voice Practice
+
+## Getting Started
 
 ### Prerequisites
+
 - Python 3.9+
 - Node.js 18+
-- PostgreSQL 12+
-- Git
+- PostgreSQL
+- Gemini API key
+
+### Backend
+
+```bash
+cd backend
+pip install -r requirements.txt
+python run.py
+```
+
+The backend runs on:
+
+```text
+http://localhost:8000
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The frontend runs on:
+
+```text
+http://localhost:3000
+```
+
+## Environment Variables
+
+Create a `.env` file inside the `backend` folder:
+
+```env
+GEMINI_API_KEY=your_gemini_api_key
+DATABASE_URL=your_postgresql_database_url
+```
+
+Optional frontend variable:
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
+
+## Project Structure
+
+```text
+AI CAREER_COACH/
+|-- backend/
+|   |-- app/
+|   |   |-- agents/
+|   |   |-- routers/
+|   |   |-- services/
+|   |   |-- models/
+|   |   |-- schemas/
+|   |   |-- database/
+|   |   |-- memory/
+|   |   `-- main.py
+|   |-- requirements.txt
+|   `-- run.py
+|
+|-- frontend/
+|   |-- src/
+|   |   |-- pages/
+|   |   |-- components/
+|   |   `-- services/
+|   |-- package.json
+|   `-- next.config.js
+|
+`-- README.md
+```
+
+## Current Status
+
+The core placement-preparation modules are implemented across resume analysis, career planning, DSA tracking, interviews, company preparation, analytics, and voice practice.
+
+Authentication and production deployment are planned as future improvements.
+
+## Future Work
+
+- Add user authentication and personal profiles.
+- Deploy the frontend and backend.
+- Add richer progress charts and historical analytics.
+- Expand company-specific preparation knowledge.
+- Add automated tests.
